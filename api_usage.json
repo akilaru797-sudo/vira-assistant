@@ -1,0 +1,10 @@
+{
+    "whatsapp": 1,
+    "gmail_send": 0,
+    "gmail_read": 0,
+    "weather": 14,
+    "battery": 2,
+    "total_commands": 17,
+    "voice_commands": 17,
+    "manual_commands": 0
+}
