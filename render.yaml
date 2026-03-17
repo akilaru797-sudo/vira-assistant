@@ -1,0 +1,34 @@
+services:
+  # Vira Assistant Web Service
+  - type: web
+    name: vira-assistant
+    env: python
+    plan: starter
+    buildCommand: pip install -r requirements.txt && pip install gunicorn gevent
+    startCommand: gunicorn --bind 0.0.0.0:$PORT --workers 4 --worker-class gevent --worker-connections 1000 --timeout 30 --keepalive 2 --max-requests 1000 --max-requests-jitter 100 --preload app:app
+    healthCheckPath: /health
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: PYTHONUNBUFFERED
+        value: "1"
+      - key: PYTHONDONTWRITEBYTECODE
+        value: "1"
+    domains:
+      - vira-assistant.onrender.com
+    autoDeploy: true
+
+  # Redis for session storage (optional)
+  - type: redis
+    name: vira-redis
+    plan: starter
+    ipAllowList: []  # Only allow internal connections
+
+  # PostgreSQL for persistent storage (optional)
+  - type: pserv
+    name: vira-db
+    env: postgres
+    plan: free
+    databases:
+      - name: vira
+        user: vira
