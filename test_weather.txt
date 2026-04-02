@@ -1,9 +1,0 @@
-Test commands for weather functionality:
-
-1. Say "weather" - Should work
-2. Say "whether" - Should work  
-3. Say "wheather" - Should work (this was the issue)
-4. Say "వాతావరణం" - Should work (Telugu)
-
-Debug logging is now enabled in the weather command.
-You should see debug messages in the console when you speak these commands.
