@@ -75,20 +75,39 @@
 
             <!-- User Management -->
             <div class="glass rounded-2xl p-6 mb-8">
-                <h2 class="text-xl font-bold mb-4">User Management</h2>
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold">User Management</h2>
+                    <div class="flex gap-2">
+                        <span class="px-2 py-1 bg-blue-100 text-blue-600 rounded text-xs">👤 Local Users</span>
+                        <span class="px-2 py-1 bg-green-100 text-green-600 rounded text-xs">🔗 Google OAuth</span>
+                    </div>
+                </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-sm">
                         <thead>
                             <tr class="border-b">
                                 <th class="text-left p-2">Username</th>
+                                <th class="text-left p-2">Name</th>
+                                <th class="text-left p-2">Email</th>
+                                <th class="text-left p-2">Auth Method</th>
                                 <th class="text-left p-2">Role</th>
+                                <th class="text-left p-2">Last Login</th>
                                 <th class="text-left p-2">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {% for username in users.keys() %}
+                            {% for username, user_data in users.items() %}
                             <tr class="border-b hover:bg-gray-50">
                                 <td class="p-2 font-semibold">{{ username }}</td>
+                                <td class="p-2">{{ user_data.get('name', 'N/A') }}</td>
+                                <td class="p-2">{{ user_data.get('email', 'N/A') }}</td>
+                                <td class="p-2">
+                                    {% if user_data.get('auth_method') == 'google' %}
+                                        <span class="px-2 py-1 bg-green-100 text-green-600 rounded text-xs">🔗 Google</span>
+                                    {% else %}
+                                        <span class="px-2 py-1 bg-blue-100 text-blue-600 rounded text-xs">👤 Local</span>
+                                    {% endif %}
+                                </td>
                                 <td class="p-2">
                                     {% if username.lower() in ['admin', 'administrator', 'root'] %}
                                         <span class="px-2 py-1 bg-red-100 text-red-600 rounded text-xs">ADMIN</span>
@@ -96,8 +115,12 @@
                                         <span class="px-2 py-1 bg-blue-100 text-blue-600 rounded text-xs">USER</span>
                                     {% endif %}
                                 </td>
+                                <td class="p-2 text-xs text-gray-500">{{ user_data.get('last_login', 'Never') }}</td>
                                 <td class="p-2">
                                     {% if username.lower() not in ['admin', 'administrator', 'root'] %}
+                                    <button onclick="toggleUserStatus('{{ username }}', {{ 'false' if user_data.get('active', True) else 'true' }})" class="px-2 py-1 {{ 'bg-yellow-500 hover:bg-yellow-600' if user_data.get('active', True) else 'bg-green-500 hover:bg-green-600' }} text-white rounded text-xs mr-1">
+                                        {{ 'Disable' if user_data.get('active', True) else 'Enable' }}
+                                    </button>
                                     <button onclick="deleteUser('{{ username }}')" class="px-2 py-1 bg-red-500 text-white rounded text-xs hover:bg-red-600">Delete</button>
                                     {% else %}
                                     <span class="text-xs text-gray-400">Protected</span>
@@ -163,11 +186,12 @@
 
         function deleteUser(username) {
             if (confirm(`Are you sure you want to delete user "${username}"?`)) {
-                fetch(`/api/admin/delete_user/${username}`, {
-                    method: 'POST',
+                fetch(`/api/admin/users`, {
+                    method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json'
-                    }
+                    },
+                    body: JSON.stringify({username: username})
                 })
                 .then(response => response.json())
                 .then(data => {
@@ -181,6 +205,34 @@
                 .catch(error => {
                     console.error('Error:', error);
                     alert('Failed to delete user');
+                });
+            }
+        }
+
+        function toggleUserStatus(username, active) {
+            if (confirm(`Are you sure you want to ${active ? 'enable' : 'disable'} user "${username}"?`)) {
+                fetch(`/api/admin/users`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username: username,
+                        active: active
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(`User ${active ? 'enabled' : 'disabled'} successfully`);
+                        location.reload();
+                    } else {
+                        alert('Error: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Failed to update user status');
                 });
             }
         }
