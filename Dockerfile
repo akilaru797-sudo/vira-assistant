@@ -1,14 +1,14 @@
 # Vira Assistant - Dockerfile
 # Multi-stage build for production-ready deployment
 
-# Use Python 3.11 slim image for better performance
-FROM python:3.11-slim
+# Use Python 3.9 slim image to match runtime.txt
+FROM python:3.9-slim
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 ENV FLASK_ENV=production
-ENV FLASK_APP=app.py
+ENV FLASK_APP=railway_app.py
 
 # Set working directory
 WORKDIR /app
@@ -50,7 +50,7 @@ EXPOSE 5000
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:5000/ || exit 1
+    CMD curl -f http://localhost:5000/health || exit 1
 
 # Default command
-CMD ["python", "app.py"]
+CMD ["python", "railway_app.py"]
