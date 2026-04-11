@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  vira-assistant:
+    build: .
+    container_name: vira-assistant
+    ports:
+      - "5000:5000"
+    volumes:
+      # Persist data files
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./user_database.json:/app/user_database.json
+      - ./contacts.json:/app/contacts.json
+      - ./reminders.json:/app/reminders.json
+      - ./api_usage.json:/app/api_usage.json
+      - ./command_history.json:/app/command_history.json
+      - ./credentials.json:/app/credentials.json
+      - ./token.json:/app/token.json
+    environment:
+      - FLASK_ENV=production
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Optional: Add nginx for reverse proxy (uncomment if needed)
+  # nginx:
+  #   image: nginx:alpine
+  #   container_name: vira-nginx
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   volumes:
+  #     - ./nginx.conf:/etc/nginx/nginx.conf
+  #   depends_on:
+  #     - vira-assistant
+  #   restart: unless-stopped

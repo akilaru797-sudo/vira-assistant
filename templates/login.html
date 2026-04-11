@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <style>
+        body { background-color: #f4f4f9; color: #1a1a1a; }
+        .glass-panel { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(0, 0, 0, 0.08); }
+    </style>
+    <title>Vira - AI Login</title>
+</head>
+<body class="flex items-center justify-center min-h-screen">
+    <div class="glass-panel p-10 rounded-[2.5rem] w-full max-w-md shadow-xl">
+        <div class="text-center mb-10">
+            <h1 class="text-6xl font-bold text-gray-900 tracking-tighter">Vira</h1>
+            <p class="text-gray-500 mt-2">Sign in to your Assistant</p>
+            <div class="mt-4 flex items-center justify-center gap-2">
+                <span class="text-xs text-blue-500">🎤 Voice Enabled</span>
+                <button onclick="toggleVoice()" class="text-xs bg-blue-100 px-2 py-1 rounded hover:bg-blue-200">Toggle</button>
+            </div>
+        </div>
+
+        <button onclick="window.location.href='/google/auth'" 
+                class="w-full mb-6 flex items-center justify-center gap-3 bg-white border border-gray-300 py-3 rounded-2xl text-gray-700 font-bold hover:bg-gray-50 transition shadow-sm">
+            <img src="https://www.google.com/favicon.ico" class="w-5 h-5">
+            Sign in with Google
+        </button>
+
+        <div class="relative mb-6">
+            <div class="absolute inset-0 flex items-center"><span class="w-full border-t border-gray-200"></span></div>
+            <div class="relative flex justify-center text-xs uppercase"><span class="bg-[#f4f4f9] px-4 text-gray-400">or use credentials</span></div>
+        </div>
+
+        {% if admin_pin_required %}
+        <!-- Admin PIN Verification Form -->
+        <form action="/admin_pin_verify" method="POST" class="space-y-4">
+            <input type="hidden" name="username" value="{{ username }}">
+            <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-4">
+                <p class="text-yellow-800 text-sm font-medium">🔐 Admin Access Required</p>
+                <p class="text-yellow-700 text-xs mt-1">Please enter your 4-digit PIN to continue</p>
+            </div>
+            <input type="password" name="pin" placeholder="Enter 4-digit PIN" maxlength="4" pattern="\d{4}" required class="w-full bg-white/50 border border-yellow-300 rounded-xl p-4 text-black outline-none focus:ring-2 focus:ring-yellow-500">
+            <button type="submit" class="w-full bg-yellow-600 text-white font-bold py-4 rounded-xl hover:bg-yellow-700 transition">Verify PIN</button>
+        </form>
+        {% else %}
+        <!-- Regular Login Form -->
+        <form action="/login" method="POST" class="space-y-4">
+            <input type="text" name="username" placeholder="Username" required class="w-full bg-white/50 border border-gray-200 rounded-xl p-4 text-black outline-none focus:ring-2 focus:ring-blue-500">
+            <input type="password" name="password" placeholder="Password" required class="w-full bg-white/50 border border-gray-200 rounded-xl p-4 text-black outline-none focus:ring-2 focus:ring-blue-500">
+            <button type="submit" class="w-full bg-blue-600 text-white font-bold py-4 rounded-xl hover:bg-blue-700 transition">Sign In</button>
+        </form>
+        {% endif %}
+
+        <div class="mt-8 pt-6 border-t border-gray-100 flex justify-between items-center text-sm">
+            <a href="/register" class="text-blue-600 font-medium hover:underline">Create Account</a>
+            <span class="text-gray-400 uppercase tracking-widest text-[10px]">Aditya</span>
+        </div>
+    </div>
+
+    <script src="/static/auth_voice.js"></script>
+    {% if admin_pin_required %}
+    <script>
+        function toggleVoice() {
+            const status = document.getElementById('voice-status');
+            if (status && status.style.display === 'none') {
+                status.style.display = 'block';
+                if (typeof resumeVoice === 'function') resumeVoice();
+            } else if (status) {
+                status.style.display = 'none';
+                if (typeof recognition !== 'undefined') recognition.stop();
+            }
+        }
+        
+        // Auto-focus PIN input for admin login
+        document.addEventListener('DOMContentLoaded', function() {
+            const pinInput = document.querySelector('input[name="pin"]');
+            if (pinInput) {
+                pinInput.focus();
+            }
+        });
+    </script>
+    {% else %}
+    <script>
+        function toggleVoice() {
+            const status = document.getElementById('voice-status');
+            if (status && status.style.display === 'none') {
+                status.style.display = 'block';
+                if (typeof resumeVoice === 'function') resumeVoice();
+            } else if (status) {
+                status.style.display = 'none';
+                if (typeof recognition !== 'undefined') recognition.stop();
+            }
+        }
+    </script>
+    {% endif %}
+</body>
+</html>

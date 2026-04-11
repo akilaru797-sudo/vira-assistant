@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <style>
+        body { background-color: #f4f4f9; color: #1a1a1a; }
+        .glass-panel { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(0, 0, 0, 0.08); }
+    </style>
+    <title>Vira - Register</title>
+</head>
+<body class="flex items-center justify-center min-h-screen p-6">
+    <div class="glass-panel p-10 rounded-[2.5rem] w-full max-w-md shadow-xl">
+        <div class="text-center mb-8">
+            <h1 class="text-5xl font-bold text-gray-900 tracking-tighter">Join Vira</h1>
+            <p class="text-gray-500 mt-2">Create your personalized portal</p>
+            <div class="mt-4 flex items-center justify-center gap-2">
+                <span class="text-xs text-blue-500">🎤 Voice Enabled</span>
+                <button onclick="toggleVoice()" class="text-xs bg-blue-100 px-2 py-1 rounded hover:bg-blue-200">Toggle</button>
+            </div>
+        </div>
+
+        <button onclick="window.location.href='/auth/google'" 
+                class="w-full mb-6 flex items-center justify-center gap-3 bg-white border border-gray-300 py-3 rounded-2xl text-gray-700 font-bold hover:bg-gray-50 transition shadow-sm">
+            <img src="https://www.google.com/favicon.ico" class="w-5 h-5">
+            Register through Google
+        </button>
+
+        <div class="relative mb-6">
+            <div class="absolute inset-0 flex items-center"><span class="w-full border-t border-gray-200"></span></div>
+            <div class="relative flex justify-center text-xs uppercase"><span class="bg-[#f4f4f9] px-4 text-gray-400">or manual signup</span></div>
+        </div>
+
+        <!-- Error/Success Messages -->
+        {% if error %}
+        <div class="bg-red-50 border border-red-200 rounded-xl p-4 mb-4">
+            <p class="text-red-800 text-sm font-medium">❌ {{ error }}</p>
+        </div>
+        {% endif %}
+
+        <form action="/register" method="POST" class="space-y-4">
+            <input type="text" 
+                   name="username" 
+                   placeholder="Username (3+ characters)" 
+                   required 
+                   minlength="3" 
+                   maxlength="20"
+                   pattern="[a-zA-Z0-9_]+"
+                   title="Username must be 3-20 characters, letters, numbers, and underscores only"
+                   class="w-full bg-white/50 border border-gray-200 rounded-xl p-4 text-black outline-none focus:ring-2 focus:ring-blue-500">
+            <p class="text-xs text-gray-500 -mt-2 mb-2">3-20 characters, letters, numbers, underscores</p>
+            
+            <input type="email" 
+                   name="email" 
+                   placeholder="Email (optional)"
+                   class="w-full bg-white/50 border border-gray-200 rounded-xl p-4 text-black outline-none focus:ring-2 focus:ring-blue-500">
+            <p class="text-xs text-gray-500 -mt-2 mb-2">For account recovery and notifications</p>
+            
+            <input type="password" 
+                   name="password" 
+                   placeholder="Password (6+ characters)" 
+                   required 
+                   minlength="6"
+                   class="w-full bg-white/50 border border-gray-200 rounded-xl p-4 text-black outline-none focus:ring-2 focus:ring-blue-500">
+            <p class="text-xs text-gray-500 -mt-2 mb-2">Minimum 6 characters</p>
+            
+            <input type="password" 
+                   name="confirm_password" 
+                   placeholder="Confirm Password" 
+                   required 
+                   minlength="6"
+                   class="w-full bg-white/50 border border-gray-200 rounded-xl p-4 text-black outline-none focus:ring-2 focus:ring-blue-500">
+            
+            <button type="submit" class="w-full bg-blue-600 text-white font-bold py-4 rounded-xl hover:bg-blue-700 transition">Create Account</button>
+        </form>
+
+        <div class="mt-6 text-center text-sm">
+            <a href="/" class="text-blue-600 hover:underline">Already have an account? Login</a>
+        </div>
+    </div>
+
+    <script src="/static/auth_voice.js"></script>
+    <script>
+        function toggleVoice() {
+            const status = document.getElementById('voice-status');
+            if (status && status.style.display === 'none') {
+                status.style.display = 'block';
+                if (typeof resumeVoice === 'function') resumeVoice();
+            } else if (status) {
+                status.style.display = 'none';
+                if (typeof recognition !== 'undefined') recognition.stop();
+            }
+        }
+    </script>
+</body>
+</html>
