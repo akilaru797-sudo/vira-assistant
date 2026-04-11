@@ -2,7 +2,21 @@
 
 **Location-based Voice Assistant with WhatsApp, Email, and Weather Integration**
 
-## 📄 License
+## � Deployment
+
+### ✅ **Live Application**
+**URL:** https://vira-assistant-production.up.railway.app
+
+- **Platform:** Railway Cloud
+- **Status:** Active & Healthy
+- **Features:** All working including user authentication, voice commands, and admin panel
+
+### 📋 Quick Access
+- **Login:** Username: `admin`, Password: `admin123`
+- **Register:** New users can create accounts
+- **Google OAuth:** Available (requires configuration)
+
+## �📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
