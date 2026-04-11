@@ -1,0 +1,7 @@
+{
+  "gmail_api": {
+    "daily_limit": 100,
+    "current_usage": 0,
+    "reset_date": "2026-04-12"
+  }
+}

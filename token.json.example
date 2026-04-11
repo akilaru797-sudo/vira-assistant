@@ -1,0 +1,11 @@
+{
+  "token": "YOUR_ACCESS_TOKEN_HERE",
+  "refresh_token": "YOUR_REFRESH_TOKEN_HERE",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "client_id": "YOUR_GOOGLE_CLIENT_ID_HERE",
+  "client_secret": "YOUR_CLIENT_SECRET_HERE",
+  "scopes": ["https://www.googleapis.com/auth/gmail.modify"],
+  "universe_domain": "googleapis.com",
+  "account": "your-email@gmail.com",
+  "expiry": "2026-04-02T14:03:37.792051Z"
+}

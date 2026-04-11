@@ -46,12 +46,12 @@ Thumbs.db
 
 # Vira Assistant specific
 PyWhatKit_DB.txt
-# token.json - Keep for deployment
-# credentials.json - Keep for deployment
-# api_usage.json - Keep for deployment
-# command_history.json - Keep for deployment
-# user_database.json - Keep for deployment
-# contacts.json - Keep for deployment
+token.json
+credentials.json
+api_usage.json
+command_history.json
+user_database.json
+contacts.json
 reminders.json
 
 # Logs
